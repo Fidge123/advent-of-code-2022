@@ -1,13 +1,9 @@
 from aocd import get_data, submit
 
-current = 0
-sums = []
+def sum_calories(elf: str) -> int:
+    return sum(int(cal) for cal in elf.split('\n'))
 
-for meal in get_data(day=1, year=2022).splitlines():
-    if meal == '':
-        sums.append(current)
-        current = 0
-    else:
-        current += int(meal)
+def top3(cal: list[int]) -> int:
+    return sum(sorted(cal)[-3:])
 
-submit(sum(sorted(sums, reverse=True)[:3]))
+submit(top3([sum_calories(elf) for elf in get_data(day=1, year=2022).split('\n\n')]))
