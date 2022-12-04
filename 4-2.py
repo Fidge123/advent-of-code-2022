@@ -1,0 +1,23 @@
+from aocd import get_data, submit
+
+def parse_assignment(assignment: str) -> list[list[str]]:
+    return [elf.split('-') for elf in assignment.split(',')]
+
+assignments = [parse_assignment(assignment) for assignment in get_data(day=4, year=2022).splitlines()]
+
+count = 0
+
+for index, (elf1, elf2) in enumerate(assignments):
+    start1, end1 = map(int, elf1)
+    start2, end2 = map(int, elf2)
+    if start1 <= start2 and end1 >= start2:
+        count += 1
+        continue
+    if start2 <= start1 and end2 >= start1:
+        count += 1
+        continue
+    if (start1 <= start2 and end1 >= end2) or (start2 <= start1 and end2 >= end1):
+        count += 1
+        continue
+
+submit(count)
