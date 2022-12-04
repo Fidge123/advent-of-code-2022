@@ -14,8 +14,5 @@ for index, ((start1, end1), (start2, end2)) in enumerate(assignments):
     if start2 <= start1 and end2 >= start1:
         count += 1
         continue
-    if (start1 <= start2 and end1 >= end2) or (start2 <= start1 and end2 >= end1):
-        count += 1
-        continue
 
 print(count)
