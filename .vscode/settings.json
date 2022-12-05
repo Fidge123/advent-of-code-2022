@@ -1,3 +1,7 @@
 {
-  "cSpell.words": ["aocd"]
+  "cSpell.words": [
+    "aocd"
+  ],
+  "deno.enable": true,
+  "deno.unstable": true
 }
