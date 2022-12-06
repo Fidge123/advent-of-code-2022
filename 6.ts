@@ -5,8 +5,7 @@ function uniqueSubstring(length: number) {
     input
       .split("")
       .findIndex(
-        (_, i, array) =>
-          [...new Set(array.slice(i - length, i))].length === length
+        (_, i, list) => new Set(list.slice(i - length, i)).size === length
       );
 }
 
