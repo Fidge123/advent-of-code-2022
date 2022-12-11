@@ -32,7 +32,7 @@ function part2(input: string) {
   return input.split("\n").reduce((sum, command) => {
     counter += 1;
     sum += drawPixel(x, counter);
-    if (counter % 40 == 39) {
+    if (counter % 40 === 39) {
       console.log(sum);
       sum = "";
     }
@@ -40,7 +40,7 @@ function part2(input: string) {
       x += parseInt(command.split(" ")[1]);
       counter += 1;
       sum += drawPixel(x, counter);
-      if (counter % 40 == 39) {
+      if (counter % 40 === 39) {
         console.log(sum);
         sum = "";
       }
