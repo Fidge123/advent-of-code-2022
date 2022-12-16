@@ -88,7 +88,7 @@ function part2(input: string) {
   const sensorData = parse(input);
   for (let y = 0; y <= 4_000_000; y++) {
     const b = getBlocked(sensorData, y);
-    if (b.gaps?.length > 0 || b.start > 0 || b.end < 4_000_000) {
+    if (b.gaps?.length || b.start > 0 || b.end < 4_000_000) {
       return b.gaps![0].start * 4_000_000 + y;
     }
   }
