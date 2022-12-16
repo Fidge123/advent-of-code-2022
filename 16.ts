@@ -21,7 +21,7 @@ interface Option {
   path: string[];
 }
 
-type Options = Option[] | Options[];
+type Options = (Option | Options)[];
 
 function parse(input: string): RawValve[] {
   return [
@@ -53,10 +53,6 @@ function getOptions(
 ): Option[] {
   const potential = [] as Option[];
 
-  if (remaining === 0) {
-    return potential;
-  }
-
   if (!visited.includes(location.name) && !opened.includes(location.name)) {
     potential.push({
       name: location.name,
@@ -67,17 +63,15 @@ function getOptions(
   }
 
   for (const loc of location.to) {
-    if (!visited.includes(loc.name))
+    if (!visited.includes(loc.name) && remaining > 1) {
       potential.push(
         ...getOptions(loc, remaining - 1, opened, [...visited, location.name])
       );
+    }
   }
 
   return potential.filter((p) => p.flow > 0).sort((a, b) => b.flow - a.flow);
 }
-
-let max = 0;
-let o: string[];
 
 function calcFlowPotential(
   pressure: number,
@@ -88,27 +82,36 @@ function calcFlowPotential(
   return options.map(({ name, flow, remaining }) => {
     const open = [...opened, name];
 
-    if (max < pressure + flow) {
-      max = pressure + flow;
-      o = open;
-    }
-    return calcFlowPotential(
+    const nextSteps = calcFlowPotential(
       pressure + flow,
       getOptions(graph.find((v) => v.name == name)!, remaining, open),
       graph,
       open
     );
+
+    return nextSteps.length
+      ? nextSteps
+      : ({ name, flow: pressure + flow, remaining: 0, path: open } as Option);
   });
 }
 
 function part1(input: string) {
   const graph = toGraph(parse(input));
-  calcFlowPotential(
+  const options = calcFlowPotential(
     0,
     getOptions(graph.find((v) => v.name == "AA")!, 30, []),
     graph
-  );
-  console.log(o);
+  ) as any;
+  const solutions: Option[] = options.flat(Infinity);
+
+  let max = 0;
+  console.log(solutions.length);
+  for (let i = 0; i < solutions.length; i++) {
+    if (max < solutions[i].flow) {
+      max = solutions[i].flow;
+    }
+  }
+
   return max;
 }
 
@@ -119,14 +122,18 @@ function part2(input: string) {
     getOptions(graph.find((v) => v.name == "AA")!, 26, []),
     graph
   ) as any;
-  const solutions: Option[] = options.flat();
-
-  console.log(options.length, solutions.length);
+  const solutions: Option[] = options.flat(Infinity);
 
   let max = 0;
   for (let i = 0; i < solutions.length; i++) {
-    for (let j = 1; j < solutions.length; j++) {
-      if (max < solutions[i].flow + solutions[j].flow) {
+    if (i % 100 === 0) {
+      console.log(i, "/", solutions.length);
+    }
+    for (let j = i + 1; j < solutions.length; j++) {
+      if (
+        !solutions[i].path.some((valve) => solutions[j].path.includes(valve)) &&
+        max < solutions[i].flow + solutions[j].flow
+      ) {
         max = solutions[i].flow + solutions[j].flow;
         console.log(solutions[i].path, solutions[j].path, max);
       }
