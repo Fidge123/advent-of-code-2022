@@ -38,8 +38,7 @@ function part1(input: string) {
 function isObsidianOrPocket(
   cube: ThreeD,
   scan: ThreeD[],
-  visited: ThreeD[] = [],
-  prefix = ""
+  visited: ThreeD[] = []
 ): boolean {
   if (isInScan(cube, scan)) {
     return true;
@@ -53,12 +52,7 @@ function isObsidianOrPocket(
   const isOOP = adjacent(cube)
     .filter((c) => !isInScan(c, visited))
     .every((side) =>
-      isObsidianOrPocket(
-        side,
-        scan,
-        [...pockets, ...visited, cube],
-        prefix + "  "
-      )
+      isObsidianOrPocket(side, scan, [...pockets, ...visited, cube])
     );
   if (isOOP) {
     pockets.push(cube);
